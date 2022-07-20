@@ -1,4 +1,5 @@
 const express = require("express");
+const verifyToken = require("../middleware/auth.middleware");
 const Post = require("../models/post.model");
 
 const postRouter = express.Router();
@@ -6,7 +7,7 @@ const postRouter = express.Router();
 // @route POST api/posts
 // @desc Create Post
 // @access Private
-postRouter.post("/", async (req, res) => {
+postRouter.post("/", verifyToken, async (req, res) => {
   const { title, description, url, status } = req.body;
 
   // Validation
