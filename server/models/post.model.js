@@ -16,7 +16,7 @@ const postSchema = new Schema({
     type: String,
     enum: ["TO LEARN", "LEARNING", "LEARNED"],
   },
-  user: {
+  userId: {
     type: Schema.Types.ObjectId,
     ref: "User",
   },

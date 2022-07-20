@@ -23,13 +23,28 @@ postRouter.post("/", verifyToken, async (req, res) => {
       description,
       url: url.startsWith("https://") ? url : `https://${url}`,
       status: status || "TO LEARN",
-      user: req.userId,
+      userId: req.userId,
     });
 
     await newPost.save();
     return res
       .status(200)
       .json({ success: true, message: "Happy learning", post: newPost });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+});
+
+// @route GET api/posts
+// @des Get posts
+// @access Private
+postRouter.get("/", verifyToken, async (req, res) => {
+  try {
+    const posts = await Post.find({ userId: req.userId });
+    return res.status(200).json({ success: true, posts });
   } catch (error) {
     console.log(error);
     return res
