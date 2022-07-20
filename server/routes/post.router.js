@@ -43,7 +43,7 @@ postRouter.post("/", verifyToken, async (req, res) => {
 // @access Private
 postRouter.get("/", verifyToken, async (req, res) => {
   try {
-    const posts = await Post.find({ userId: req.userId });
+    const posts = await Post.find({ userId: req.userId }).populate("userId", "username");
     return res.status(200).json({ success: true, posts });
   } catch (error) {
     console.log(error);
