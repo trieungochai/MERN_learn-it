@@ -6,6 +6,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 3000;
 
 const authRouter = require("./routes/auth.router");
+const postRouter = require("./routes/post.router");
 
 const connectDB = async () => {
   try {
@@ -27,6 +28,7 @@ const connectDB = async () => {
 connectDB();
 
 app.use("/api/auth", authRouter);
+app.use("/api/posts", postRouter);
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
