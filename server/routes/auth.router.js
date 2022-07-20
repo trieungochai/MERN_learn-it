@@ -43,7 +43,10 @@ authRouter.post("/register", async (req, res) => {
       accessToken,
     });
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
   }
 });
 
