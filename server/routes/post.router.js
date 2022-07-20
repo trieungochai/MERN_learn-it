@@ -23,7 +23,7 @@ postRouter.post("/", verifyToken, async (req, res) => {
       description,
       url: url.startsWith("https://") ? url : `https://${url}`,
       status: status || "TO LEARN",
-      user: "62d68eef9fcc4535fdcb53ec", // TODO
+      user: req.userId,
     });
 
     await newPost.save();
