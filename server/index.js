@@ -1,12 +1,16 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
+app.use(express.json());
 const PORT = process.env.PORT || 3000;
+
+const authRouter = require("./routes/auth.router");
 
 const connectDB = async () => {
   try {
     await mongoose.connect(
-      "mongodb+srv://haitn:911225@learnit.326ui.mongodb.net/?retryWrites=true&w=majority",
+      `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@learnit.326ui.mongodb.net/?retryWrites=true&w=majority`,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -22,9 +26,7 @@ const connectDB = async () => {
 
 connectDB();
 
-app.get("/", (req, res) => {
-  res.status(200).send("See you Space Cowboy");
-});
+app.use("/api/auth", authRouter);
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);

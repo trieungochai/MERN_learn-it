@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const postSchema = new Schema({
@@ -18,8 +18,8 @@ const postSchema = new Schema({
   },
   user: {
     type: Schema.Types.ObjectId,
-    ref: "users",
+    ref: "User",
   },
 });
 
-module.exports = mongoose.model("posts", postSchema);
+module.exports = mongoose.model("Post", postSchema);
