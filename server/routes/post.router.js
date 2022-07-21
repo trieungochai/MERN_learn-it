@@ -78,12 +78,43 @@ postRouter.put("/:id", verifyToken, async (req, res) => {
 
     const updatePostCondition = { _id: req.params.id, userId: req.userId };
 
-    updatedPost = await Post.findOneAndUpdate(updatePostCondition, updatedPost, {
-      new: true,
-    });
+    updatedPost = await Post.findOneAndUpdate(
+      updatePostCondition,
+      updatedPost,
+      {
+        new: true,
+      }
+    );
 
     // User not authorized to update post, or post not found
     if (!updatedPost)
+      return res.status(401).json({
+        success: false,
+        message: "User not authorized to update post, or post not found",
+      });
+    return res.status(200).json({
+      success: true,
+      message: "Successfully updated",
+      post: updatedPost,
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+});
+
+// @route DELETE api/posts
+// @des Delete post
+// @access Private
+postRouter.delete("/:id", verifyToken, async (req, res) => {
+  try {
+    const deletePostCondition = { _id: req.params.id, userId: res.userId };
+    const deletePost = await Post.findByIdAndDelete(deletePostCondition);
+
+    // User not authorized to update post, or post not found
+    if (!deletePost)
       return res.status(401).json({
         success: false,
         message: "User not authorized to update post, or post not found",
@@ -92,8 +123,8 @@ postRouter.put("/:id", verifyToken, async (req, res) => {
       .status(200)
       .json({
         success: true,
-        message: "Successfully updated",
-        post: updatedPost,
+        message: "Successfully deleted",
+        post: deletePost,
       });
   } catch (error) {
     console.log(error);
