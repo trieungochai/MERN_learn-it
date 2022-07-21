@@ -43,8 +43,58 @@ postRouter.post("/", verifyToken, async (req, res) => {
 // @access Private
 postRouter.get("/", verifyToken, async (req, res) => {
   try {
-    const posts = await Post.find({ userId: req.userId }).populate("userId", "username");
+    const posts = await Post.find({ userId: req.userId }).populate(
+      "userId",
+      "username"
+    );
     return res.status(200).json({ success: true, posts });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+});
+
+// @route PUT api/posts
+// @des Update post
+// @access Private
+postRouter.put("/:id", verifyToken, async (req, res) => {
+  const { title, description, url, status } = req.body;
+
+  // Validation
+  if (!title)
+    return res
+      .status(400)
+      .json({ success: false, message: "Title is required" });
+
+  try {
+    let updatedPost = {
+      title,
+      description: description || "",
+      url: (url.startsWith("https://") ? url : `https://${url}`) || "",
+      status: status || "TO LEARN",
+    };
+
+    const updatePostCondition = { _id: req.params.id, userId: req.userId };
+
+    updatedPost = await Post.findOneAndUpdate(updatePostCondition, updatedPost, {
+      new: true,
+    });
+
+    // User not authorized to update post, or post not found
+    if (!updatedPost)
+      return res.status(401).json({
+        success: false,
+        message: "User not authorized to update post, or post not found",
+      });
+    return res
+      .status(200)
+      .json({
+        success: true,
+        message: "Successfully updated",
+        post: updatedPost,
+      });
   } catch (error) {
     console.log(error);
     return res
